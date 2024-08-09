@@ -1,5 +1,8 @@
 # gist-fs
 
+<sup>**Social Media Photo by [Gary Ellis](https://unsplash.com/@garyellisphoto) on [Unsplash](https://unsplash.com/)**</sup>
+
+
 A daily rate-limited way to have free storage in the wild.
 
 ## ⚠️ Warning
@@ -9,6 +12,22 @@ A daily rate-limited way to have free storage in the wild.
   * the **third rule** of this module is that **it's your fault if you ignored previous rules** on this list
 
 If these rules are reasonable enough and understood, we're good to go!
+
+## 🛈 GitHub Token
+
+In order to use this module, in a way or another, you need to generate a new token, possibly dedicated to *gists* things only.
+
+Please [go here](https://github.com/settings/tokens) to do so, once you are logged in, and do the following:
+
+![Generate new token](./assets/generate-token.png)
+
+Once you are in that lovely interface, please constrain such token to deal with *gists* only:
+
+![Setup token](./assets/setup-token.png)
+
+Once you have done that and you have your *read-once* token, please do not store it in any *HTML* or *JS* or *CSS* file, or anyone else, as that's your token to be able to use this module and you don't want that to be abused by anyone out there.
+
+**If your token leaks** please remember to start again the procedure, remove the previous one, and not commit the same mistake again, thank you!
 
 - - -
 
