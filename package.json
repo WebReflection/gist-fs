@@ -1,0 +1,25 @@
+{
+  "name": "gist-fs",
+  "version": "0.0.0",
+  "main": "src/index.js",
+  "type": "module",
+  "keywords": ["persistent", "storage", "gist"],
+  "author": "Andrea Giammarchi",
+  "license": "MIT",
+  "description": "A daily rate-limited way to have free storage in the wild",
+  "dependencies": {
+    "@octokit/core": "^6.1.2"
+  },
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WebReflection/gist-fs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WebReflection/gist-fs/issues"
+  },
+  "homepage": "https://github.com/WebReflection/gist-fs#readme"
+
+}
