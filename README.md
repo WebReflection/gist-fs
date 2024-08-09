@@ -29,6 +29,8 @@ Once you have done that and you have your *read-once* token, please do not store
 
 **If your token leaks** please remember to start again the procedure, remove the previous one, and not commit the same mistake again, thank you!
 
+**[Live Demo](https://webreflection.github.io/gist-fs/test/) that creates a new Gist** on your behalf once you have provided your TOKEN and checked the devtools console.
+
 - - -
 
 Now, because I am going on vacation you can have a *gist* (no pun intended) of how this module works, out of the [index.html](./test/index.html) file which already code cover most of this module.
