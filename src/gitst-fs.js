@@ -8,6 +8,12 @@ import {
   valid,
 } from './utils.js';
 
+const getID = options => (
+  typeof options === 'string' ?
+    options :
+    (options.id || options.gist_id)
+);
+
 /**
  * @typedef {Object} ListOptions
  * @prop {string} [username] list results only for a specific user (usually *your one*)
@@ -36,6 +42,7 @@ export default class GistFS {
     this.#octokit = new Octokit({ auth });
   }
 
+  // https://docs.github.com/en/rest/gists/gists?apiVersion=2022-11-28#create-a-gist
   async create(options = {}) {
     const opt = { ...options };
     if (!opt.description) opt.description = 'GistFS: no description';
@@ -51,13 +58,16 @@ export default class GistFS {
     throw data;
   }
 
+  // https://docs.github.com/en/rest/gists/gists?apiVersion=2022-11-28#get-a-gist
   async get(options) {
-    const gist_id = typeof options === 'string' ? options : (options.id || options.gist_id);
+    const gist_id = getID(options);
     const { data, status } = await req(this.#octokit, `GET /gists/${gist_id}`, { gist_id });
     if (valid(status)) return lessDetails.call(this.#octokit, data);
     throw data;
   }
 
+  // https://docs.github.com/en/rest/gists/gists?apiVersion=2022-11-28#list-public-gists
+  // https://docs.github.com/en/rest/gists/gists?apiVersion=2022-11-28#list-gists-for-a-user
   /**
    * @param {ListOptions} [options]
    * @returns {ListResult[] | Promise<void, Error>}
@@ -78,6 +88,13 @@ export default class GistFS {
     if (valid(status)) return data.map(lessDetails, this.#octokit);
     throw data;
   }
+
+  // https://docs.github.com/en/rest/gists/gists?apiVersion=2022-11-28#delete-a-gist
+  async delete(options) {
+    const gist_id = getID(options);
+    const { data, status } = await req(this.#octokit, `DELETE /gists/${gist_id}`, { gist_id });
+    if (!valid(status)) throw data;
+  }
 }
 
 function lessDetails(details) {
@@ -95,4 +112,3 @@ function lessDetails(details) {
     fs: new GistFSHandler(octokit, id, description, files),
   };
 }
-

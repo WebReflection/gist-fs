@@ -9,6 +9,7 @@ const gist_key_fs = (key, prompt = globalThis.prompt) => {
   localStorage.setItem(key, auth);
   return gist_fs(auth);
 };
+
 const gistKeyFS = gist_key_fs;
 
 export {

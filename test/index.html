@@ -5,10 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script type="importmap">{"imports":{"@octokit/core":"https://esm.sh/@octokit/core"}}</script>
   <script type="module">
+    // import { gistKeyFS } from 'https://esm.sh/gist-fs';
     import { gistKeyFS } from '../src/index.js';
 
-    // ⚠️ make it random, do better than this demo!
+    // ⚠️ make it random or as unique as possible
     const TOKEN_NAME = 'GITHUB_API_SECURE_TOKEN';
+
+    const log = (...args) => {
+      console.log(...args);
+      output.textContent += `${[].concat(...args).join(' ')}\n`;
+    };
 
     try {
       // asks for a GitHub token if not known yet
@@ -18,10 +24,10 @@
       let id = localStorage.getItem(TOKEN_NAME + '_ID');
       if (!id) {
         // HOW TO CREATE A FILE SYSTEM
-        console.log('Creating Gist');
+        log('Creating Gist');
         ({ id } = await gist.create({
           // optional: a nice to have for your FS usage
-          description: 'Example of a gist',
+          description: 'GistFS live demo - example',
           // optional: is it public? `false` by default
           'public': false,
           // optional: initial FS content
@@ -42,14 +48,14 @@
       }
 
       // grab your repository
-      console.log('Retrieving Gist');
+      log('Retrieving Gist');
       const { fs } = await gist.get(id);
 
       // HOW TO VISUALIZE A FILE SYSTEM
-      console.log('Crawling Gist');
+      log('Crawling Gist');
       (function crawl(path, indentation = 0) {
         for (const file of fs.ls(path)) {
-          console.log('\t'.repeat(indentation) + file);
+          log('\t'.repeat(indentation) + file);
           const curr = [path, file].join('/');
           if (fs.isDir(curr))
             crawl(curr, indentation + 1);
@@ -57,30 +63,32 @@
       })('.');
 
       // HOW TO WRITE A FILE CONTENT (automatic -p for folders)
-      console.log('Writing', './folder/test.txt');
+      log('Writing', './folder/test.txt');
       await fs.write('./folder/test.txt', Math.random());
 
       // HOW TO READ A FILE CONTENT
-      console.log('Reading', './folder/test.txt');
+      log('Reading', './folder/test.txt');
       console.log(await fs.read('./folder/test.txt'));
 
       // HOW TO WRITE A NEW FILE CONTENT (automatic -p for folders)
-      console.log('Writing new file', './folder/random.txt');
+      log('Writing new file', './folder/random.txt');
       await fs.write('./folder/random.txt', Math.random());
-      console.log('Reading new file', './folder/random.txt');
+      log('Reading new file', './folder/random.txt');
       console.log(await fs.read('./folder/random.txt'));
 
-      console.log('Listing', './folder');
-      console.log(fs.ls('./folder'));
+      log('Listing', './folder');
+      log(fs.ls('./folder'));
       // ['test.py', 'test.txt', 'random.txt']
 
       // HOW TO REMOVE A FILE
-      console.log('Removing', './folder/random.txt');
+      log('Removing', './folder/random.txt');
       await fs.rm('./folder/random.txt');
 
-      console.log('Listing', './folder');
-      console.log(fs.ls('./folder'));
+      log('Listing', './folder');
+      log(fs.ls('./folder'));
       // ['test.py', 'test.txt']
+
+      log('Done');
     }
     catch (_) {
       // start from scratch
@@ -89,4 +97,7 @@
     }
   </script>
 </head>
+<body>
+  <pre id="output"></pre>
+</body>
 </html>

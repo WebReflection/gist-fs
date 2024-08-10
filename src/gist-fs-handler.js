@@ -42,6 +42,11 @@ export default class GistFSHandler {
     return this.#files[p].content;
   }
 
+  stats(path) {
+    const p = toFile(path, 'read');
+    return isDir(p) ? { directory: true, files: this.ls(path) } : this.#files[p];
+  }
+
   async rm(path, options = {}) {
     const p = toPath(path);
     if (options.recursive && !isDir(p))
@@ -50,7 +55,7 @@ export default class GistFSHandler {
     for (const [key] of entries(this.#files)) {
       if (key.startsWith(p)) files[key] = null;
     }
-    const result = await update(
+    await update(
       this.#octokit,
       this.#id,
       this.#description,
@@ -59,7 +64,6 @@ export default class GistFSHandler {
     for (const [key, value] of entries(files)) {
       if (value == null) delete files[key];
     }
-    return result;
   }
 
   async write(path, content) {
@@ -67,7 +71,7 @@ export default class GistFSHandler {
     const c = typeof content === 'object' ? content : String(content);
     if (this.#files.hasOwnProperty(p)) this.#files[p].content = c;
     else this.#files[p] = { content: c };
-    return await update(
+    await update(
       this.#octokit,
       this.#id,
       this.#description,
