@@ -72,6 +72,7 @@ export {
   fromPath,
   isDir,
   req,
+  resolvePath,
   toFile,
   toPath,
   update,

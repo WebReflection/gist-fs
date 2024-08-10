@@ -3,10 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script type="importmap">{"imports":{"@octokit/core":"https://esm.sh/@octokit/core"}}</script>
+  <script type="importmap">
+    {
+      "imports": {
+        "gist-fs": "../src/index.js",
+        "@octokit/core": "https://esm.sh/@octokit/core",
+        "buffer-to-base64": "https://esm.sh/buffer-to-base64"
+      }
+    }
+  </script>
   <script type="module">
     // import { gistKeyFS } from 'https://esm.sh/gist-fs';
-    import { gistKeyFS } from '../src/index.js';
+    import { gistKeyFS } from 'gist-fs';
 
     // ⚠️ make it random or as unique as possible
     const TOKEN_NAME = 'GITHUB_API_SECURE_TOKEN';
@@ -18,14 +26,14 @@
 
     try {
       // asks for a GitHub token if not known yet
-      const gist = gistKeyFS(TOKEN_NAME);
+      const gfs = gistKeyFS(TOKEN_NAME);
 
       // check for gist related to this page!
-      let id = localStorage.getItem(TOKEN_NAME + '_ID');
+      let fs, id = localStorage.getItem(TOKEN_NAME + '_ID');
       if (!id) {
         // HOW TO CREATE A FILE SYSTEM
         log('Creating Gist');
-        ({ id } = await gist.create({
+        ({ fs, id } = await gfs.create({
           // optional: a nice to have for your FS usage
           description: 'GistFS live demo - example',
           // optional: is it public? `false` by default
@@ -46,10 +54,11 @@
         // make it discoverable next update
         localStorage.setItem(TOKEN_NAME + '_ID', id);
       }
-
-      // grab your repository
-      log('Retrieving Gist');
-      const { fs } = await gist.get(id);
+      else {
+        // grab your repository
+        log('Retrieving Gist');
+        ({ fs } = await gfs.get(id));
+      }
 
       // HOW TO VISUALIZE A FILE SYSTEM
       log('Crawling Gist');
@@ -91,7 +100,6 @@
       log('Done');
     }
     catch (_) {
-      // start from scratch
       localStorage.clear();
       location.reload();
     }

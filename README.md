@@ -188,12 +188,14 @@ await gfs.delete({ gist_id: "unique-gist-identifier" });
 
 The `fs` reference of each *GistDetails* is a special instance able to:
 
-  * `fs.isDir(path):boolean` that returns `true` if the *path* is a folder, where each folder is defined by an internal naming convention as *gists* don't support folders out of the box
-  * `fs.ls(path):string[]` that returns a list of file names within a specific folder, it throws if the *path* is not a folder
-  * `fs.read(path):string` that returns the file content (not sure if it could a buffer ... need to check)
-  * `fs.stats(path)` that returns the file details from Octokit or `{ directory: true, files: [...] }` when *path* is a folder
-  * `fs.rm(path, options = {}):Promise<void>` that removes a *path* if it's a file or remove all files if it's a folder. In latter case the *options* must contain `recursive` boolean `true` or it wll throw
-  * `fs.write(path, content):Promise<void>` to write content in a file. Currently tested only as *string* but I will eventually make buffers or files storable too, in case that's not already the case (need to check)
+  * **synchronous methods**
+    * `fs.isDir(path):boolean` that returns `true` if the *path* is a folder, where each folder is defined by an internal naming convention as *gists* don't support folders out of the box
+    * `fs.ls(path):string[]` that returns a list of file names within a specific folder, it throws if the *path* is not a folder
+    * `fs.stats(path)` that returns the file details from Octokit or `{ directory: true, files: [...] }` when *path* is a folder
+  * **asynchronous methods**
+    * `fs.read(path):Promise<string|File>` that returns the file content as *string* if it was stored as string, otherwise a *File* instance
+    * `fs.rm(path, options = {}):Promise<void>` that removes a *path* if it's a file or remove all files if it's a folder. In latter case the *options* must contain `recursive` boolean `true` or it wll throw
+    * `fs.write(path, content:string|File):Promise<void>` to write content in a file. If the content is a *string* it's also then retrieved as such. If the content is an instance of *File*, it's stored as compressed base64 string as the REST API accepts only strings so this seemed to be fair. Once *read*, the file with that name, content, and type will be returned.
 
 - - -
 

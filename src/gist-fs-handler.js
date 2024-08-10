@@ -1,7 +1,10 @@
+import { encode, decode } from 'buffer-to-base64';
+
 import {
   entries,
   fromPath,
   isDir,
+  resolvePath,
   toFile,
   toPath,
   update,
@@ -24,6 +27,7 @@ export default class GistFSHandler {
   }
 
   ls(path) {
+    path = resolvePath(path);
     const p = toPath(path);
     let drop = 0;
     if (!isDir(p)) throw new Error(`${path} is not a folder`);
@@ -37,14 +41,23 @@ export default class GistFSHandler {
     return [...list];
   }
 
-  read(path) {
-    const p = toFile(path, 'read');
-    return this.#files[p].content;
-  }
-
   stats(path) {
     const p = toFile(path, 'read');
     return isDir(p) ? { directory: true, files: this.ls(path) } : this.#files[p];
+  }
+
+  async read(path) {
+    const p = toFile(path, 'read');
+    const { content } = this.#files[p];
+    if (/^data:([^;]+?);base64,(\S*)$/.test(content)) {
+      const { $1: type, $2: base64 } = RegExp;
+      return new File(
+        [await decode(base64)],
+        path.split('/').at(-1),
+        { type }
+      );
+    }
+    return content;
   }
 
   async rm(path, options = {}) {
@@ -68,7 +81,11 @@ export default class GistFSHandler {
 
   async write(path, content) {
     const p = toFile(path, 'write');
-    const c = typeof content === 'object' ? content : String(content);
+    let c = String(content);
+    if (content instanceof File) {
+      const buffer = await content.arrayBuffer();
+      c = `data:${content.type};base64,${await encode(buffer)}`;
+    }
     if (this.#files.hasOwnProperty(p)) this.#files[p].content = c;
     else this.#files[p] = { content: c };
     await update(

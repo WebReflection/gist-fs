@@ -12,7 +12,8 @@
   "license": "MIT",
   "description": "A daily rate-limited way to have free storage in the wild",
   "dependencies": {
-    "@octokit/core": "^6.1.2"
+    "@octokit/core": "^6.1.2",
+    "buffer-to-base64": "^0.1.6"
   },
   "exports": {
     ".": "./src/index.js"

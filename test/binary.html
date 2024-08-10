@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="importmap">
+    {
+      "imports": {
+        "gist-fs": "../src/index.js",
+        "@octokit/core": "https://esm.sh/@octokit/core",
+        "buffer-to-base64": "https://esm.sh/buffer-to-base64"
+      }
+    }
+  </script>
+  <script type="module">
+    // import { gistKeyFS } from 'https://esm.sh/gist-fs';
+    import { gistKeyFS } from 'gist-fs';
+    import { encode, decode } from 'buffer-to-base64';
+
+    // ⚠️ make it random or as unique as possible
+    const TOKEN_NAME = 'GITHUB_API_SECURE_TOKEN';
+
+
+    const appendImage = file => {
+      const url = URL.createObjectURL(file);
+      const image = new Image;
+      image.onload = () => URL.revokeObjectURL(url);
+      image.width = 100;
+      image.src = url;
+      document.body.appendChild(image);
+    };
+
+    const gfs = gistKeyFS(TOKEN_NAME);
+
+    const { fs, id } = await gfs.get(
+      localStorage.getItem(TOKEN_NAME + '_ID')
+    );
+
+    document.querySelector('input[type="file"]').onchange = async ({ currentTarget }) => {
+      const [ file ] = currentTarget.files;
+      await fs.write(file.name, file);
+      currentTarget.value = '';
+      if (file.name.endsWith('.png'))
+        appendImage(file);
+    };
+
+    for (const name of fs.ls('./')) {
+      if (name.endsWith('.png'))
+        appendImage(await fs.read(name));
+    }
+  </script>
+</head>
+<body>
+  <input type="file">
+  <hr>
+</body>
+</html>
