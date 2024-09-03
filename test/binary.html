@@ -40,18 +40,18 @@
       const [ file ] = currentTarget.files;
       await fs.write(file.name, file);
       currentTarget.value = '';
-      if (file.name.endsWith('.png'))
-        appendImage(file);
+      appendImage(file);
     };
 
     for (const name of fs.ls('./')) {
-      if (name.endsWith('.png'))
-        appendImage(await fs.read(name));
+      const file = await fs.read(name);
+      if (file instanceof File)
+        appendImage(file);
     }
   </script>
 </head>
 <body>
-  <input type="file">
+  <input type="file" accept="image/*">
   <hr>
 </body>
 </html>

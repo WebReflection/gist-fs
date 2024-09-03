@@ -136,7 +136,7 @@ fs.stats('README.md');
 If a *gist* **id** is already known, which is basically the gist unique identifier in its url, this method returns a *GistDetails* of such gist.
 
 ```js
-const { fs } = await gfs.create(gist_id);
+const { fs } = await gfs.get(gist_id);
 fs.ls('.');
 // ['README.md', 'sub']
 ```
@@ -145,9 +145,9 @@ The `options` parameter can be either the *id* or a *GistDetails* type or an obj
 
 ```js
 // these are all fine and do the same
-await gfs.create("unique-gist-identifier");
-await gfs.create({ id: "unique-gist-identifier" });
-await gfs.create({ gist_id: "unique-gist-identifier" });
+await gfs.get("unique-gist-identifier");
+await gfs.get({ id: "unique-gist-identifier" });
+await gfs.get({ gist_id: "unique-gist-identifier" });
 ```
 
 #### list(options = {})
