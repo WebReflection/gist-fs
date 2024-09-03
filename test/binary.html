@@ -24,10 +24,14 @@
     const appendImage = file => {
       const url = URL.createObjectURL(file);
       const image = new Image;
+      const { body } = document;
       image.onload = () => URL.revokeObjectURL(url);
+      image.dataset.name = file.name;
       image.width = 100;
       image.src = url;
-      document.body.appendChild(image);
+      const previous = body.querySelector(`img[data-name="${file.name}"]`);
+      if (previous) previous.replaceWith(image);
+      else body.appendChild(image);
     };
 
     const gfs = gistKeyFS(TOKEN_NAME);
