@@ -44,6 +44,7 @@
     };
 
     for (const name of fs.ls('./')) {
+      if (fs.isDir(name)) continue;
       const file = await fs.read(name);
       if (file instanceof File)
         appendImage(file);

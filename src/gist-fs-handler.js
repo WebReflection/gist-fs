@@ -29,13 +29,11 @@ export default class GistFSHandler {
   ls(path) {
     path = resolvePath(path);
     const p = toPath(path);
-    let drop = 0;
     if (!isDir(p)) throw new Error(`${path} is not a folder`);
-    else drop = path.split('/').length - 1;
-    const { length } = p;
+    const drop = path.split('/').length - 1;
     const list = new Set;
     for (const [key] of entries(this.#files)) {
-      if (!length || key.startsWith(p))
+      if (key.startsWith(p))
         list.add(fromPath(key).split('/').at(drop));
     }
     return [...list];
