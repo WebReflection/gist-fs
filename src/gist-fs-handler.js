@@ -30,7 +30,7 @@ export default class GistFSHandler {
     path = resolvePath(path);
     const p = toPath(path);
     if (!isDir(p)) throw new Error(`${path} is not a folder`);
-    const drop = path.split('/').length - 1;
+    const drop = path.split('/').length - (path.length ? 0 : 1);
     const list = new Set;
     for (const [key] of entries(this.#files)) {
       if (key.startsWith(p))
