@@ -98,17 +98,13 @@ export default class GistFS {
 }
 
 function lessDetails(details) {
-  const octokit = this;
-  const { description, files, id } = details;
   return {
-    id,
-    files,
-    description,
-    html_url: details.html_url,
-    created_at: details.created_at,
-    updated_at: details.updated_at,
-    public: details.public,
-    comments: details.comments,
-    fs: new GistFSHandler(octokit, id, description, files),
+    ...details,
+    fs: new GistFSHandler(
+      this,
+      details.id,
+      details.description,
+      details.files,
+    ),
   };
 }
