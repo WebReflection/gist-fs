@@ -40,9 +40,17 @@ export default class GistFS {
   constructor(auth) {
     this.#octokit = new Octokit({
       auth,
-      headers: {
-        'If-None-Match': '',
-      },
+      request: {
+        fetch(url, options) {
+          return fetch(url, {
+            ...options,
+            headers: {
+              ...options.headers,
+              'If-None-Match': '',
+            },
+          });
+        },
+     },
     });
   }
 
