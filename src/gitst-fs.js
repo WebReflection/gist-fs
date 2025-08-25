@@ -37,9 +37,23 @@ const getID = options => (
 
 export default class GistFS {
   #octokit;
-
   constructor(auth) {
-    this.#octokit = new Octokit({ auth });
+    this.#octokit = new Octokit({
+      auth,
+      request: {
+        fetch(url, options) {
+          return fetch(url, {
+            ...options,
+            headers: {
+              Expires: 0,
+              Pragma: 'no-cache',
+              'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+              ...options.headers,
+            },
+          });
+        },
+     },
+    });
   }
 
   // https://docs.github.com/en/rest/gists/gists?apiVersion=2022-11-28#create-a-gist
