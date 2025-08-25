@@ -41,17 +41,8 @@ export default class GistFS {
     this.#octokit = new Octokit({
       auth,
       request: {
-        fetch(url, options) {
-          return fetch(url, {
-            ...options,
-            headers: {
-              Expires: 0,
-              Pragma: 'no-cache',
-              ...options.headers,
-            },
-          });
-        },
-     },
+        cache: 'reload',
+      },
     });
   }
 
